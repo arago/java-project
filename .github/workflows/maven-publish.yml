@@ -31,4 +31,4 @@ jobs:
         run: make deploy
         env:
           MVN_OPTIONS: "--batch-mode"
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.ARAGO_GITHUB_TOKEN }}

@@ -49,13 +49,13 @@
             <id>github</id>
             <uniqueVersion>false</uniqueVersion>
             <name>arago GitHub Maven Repository</name>
-            <url>https://maven.pkg.github.com/arago/java-project</url>
+            <url>https://maven.pkg.github.com/arago/repository-public</url>
         </repository>
         <snapshotRepository>
             <id>github</id>
             <uniqueVersion>false</uniqueVersion>
             <name>arago GitHub Maven Repository</name>
-            <url>https://maven.pkg.github.com/arago/java-project</url>
+            <url>https://maven.pkg.github.com/arago/repository-public</url>
         </snapshotRepository>
     </distributionManagement>
 
