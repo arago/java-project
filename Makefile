@@ -1,17 +1,17 @@
 VERSION := $(shell cat ./VERSION)
 
 compile: set_version
-	mvn compile
+	mvn $(MVN_OPTIONS) compile
 
 install: set_version
-	mvn install
+	mvn $(MVN_OPTIONS) install
 
 deploy: set_version
-	mvn --batch-mode deploy
+	mvn $(MVN_OPTIONS) deploy
 
 set_version:
-	mvn versions:set -DallowSnapshots=true -DnewVersion="$(VERSION)" || true
-	mvn versions:commit
+	mvn $(MVN_OPTIONS) versions:set -DallowSnapshots=true -DnewVersion="$(VERSION)" || true
+	mvn $(MVN_OPTIONS) versions:commit
 
 clean:
-	mvn clean
+	mvn $(MVN_OPTIONS) clean
