@@ -36,19 +36,6 @@
 
     </properties>
 
-    <repositories>
-        <repository>
-            <id>arago-private</id>
-            <name>Private arago nexus repository</name>
-            <url>https://nexus.arago.co/repository/arago-private</url>
-        </repository>
-        <repository>
-            <id>github-public</id>
-            <name>arago GitHub Maven Repository</name>
-            <url>https://maven.pkg.github.com/arago/public</url>
-        </repository>
-    </repositories>
-
     <distributionManagement>
 <!--        <repository>-->
 <!--            <id>arago-private</id>-->
@@ -61,10 +48,14 @@
         <repository>
             <id>github-public</id>
             <uniqueVersion>false</uniqueVersion>
+            <name>arago GitHub Maven Repository</name>
+            <url>https://maven.pkg.github.com/arago/public</url>
         </repository>
         <snapshotRepository>
             <id>github-public</id>
             <uniqueVersion>false</uniqueVersion>
+            <name>arago GitHub Maven Repository</name>
+            <url>https://maven.pkg.github.com/arago/public</url>
         </snapshotRepository>
     </distributionManagement>
 
