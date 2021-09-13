@@ -46,13 +46,13 @@
 <!--            <uniqueVersion>false</uniqueVersion>-->
 <!--        </snapshotRepository>-->
         <repository>
-            <id>github-public</id>
+            <id>github</id>
             <uniqueVersion>false</uniqueVersion>
             <name>arago GitHub Maven Repository</name>
             <url>https://maven.pkg.github.com/arago/*</url>
         </repository>
         <snapshotRepository>
-            <id>github-public</id>
+            <id>github</id>
             <uniqueVersion>false</uniqueVersion>
             <name>arago GitHub Maven Repository</name>
             <url>https://maven.pkg.github.com/arago/*</url>
