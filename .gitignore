@@ -1,0 +1,8 @@
+# Project exclude paths
+/collections/target/
+/common/target/
+/json/target/
+/json-schema/target/
+/json-surfer/target/
+
+/.idea

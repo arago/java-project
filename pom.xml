@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>co.arago</groupId>
+    <artifactId>java-project</artifactId>
+    <name>${project.artifactId}</name>
+    <version>0.0.2-SNAPSHOT</version>
+    <packaging>pom</packaging>
+
+    <organization>
+        <name>arago GmbH</name>
+        <url>https://www.arago.co</url>
+    </organization>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+        <maven.compiler.source>11</maven.compiler.source>
+        <maven.compiler.target>11</maven.compiler.target>
+
+        <plugin-compiler-version>3.7.0</plugin-compiler-version>
+        <plugin-source-version>3.2.0</plugin-source-version>
+        <plugin-jar-version>3.2.0</plugin-jar-version>
+        <plugin-resources-version>3.0.2</plugin-resources-version>
+        <plugin-javadoc-version>3.0.1</plugin-javadoc-version>
+        <plugin-surefire-version>2.22.0</plugin-surefire-version>
+
+        <slf4j-version>1.7.32</slf4j-version>
+        <commons-text-version>1.9</commons-text-version>
+        <commons-io-version>2.11.0</commons-io-version>
+
+        <junit5-version>5.8.0-M1</junit5-version>
+
+    </properties>
+
+    <repositories>
+        <repository>
+            <id>arago-private</id>
+            <name>Private arago nexus repository</name>
+            <url>https://nexus.arago.co/repository/arago-private</url>
+        </repository>
+        <repository>
+            <id>github-public</id>
+            <name>arago GitHub Maven Repository</name>
+            <url>https://maven.pkg.github.com/arago/public</url>
+        </repository>
+    </repositories>
+
+    <distributionManagement>
+<!--        <repository>-->
+<!--            <id>arago-private</id>-->
+<!--            <uniqueVersion>false</uniqueVersion>-->
+<!--        </repository>-->
+<!--        <snapshotRepository>-->
+<!--            <id>arago-private</id>-->
+<!--            <uniqueVersion>false</uniqueVersion>-->
+<!--        </snapshotRepository>-->
+        <repository>
+            <id>github-public</id>
+            <uniqueVersion>false</uniqueVersion>
+        </repository>
+        <snapshotRepository>
+            <id>github-public</id>
+            <uniqueVersion>false</uniqueVersion>
+        </snapshotRepository>
+    </distributionManagement>
+
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>${plugin-compiler-version}</version>
+                <configuration>
+                    <source>${maven.compiler.source}</source>
+                    <target>${maven.compiler.target}</target>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>${plugin-source-version}</version>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>${plugin-jar-version}</version>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <addDefaultEntries>true</addDefaultEntries>
+                            <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+                            <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
+                        </manifest>
+                    </archive>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>${plugin-resources-version}</version>
+                <configuration>
+                    <encoding>${project.build.sourceEncoding}</encoding>
+                </configuration>
+            </plugin>
+            <!--            <plugin>-->
+            <!--                <groupId>net.revelc.code.formatter</groupId>-->
+            <!--                <artifactId>formatter-maven-plugin</artifactId>-->
+            <!--                <version>2.16.0</version>-->
+            <!--                <executions>-->
+            <!--                    <execution>-->
+            <!--                        <goals>-->
+            <!--                            <goal>format</goal>-->
+            <!--                        </goals>-->
+            <!--                    </execution>-->
+            <!--                </executions>-->
+            <!--                <configuration>-->
+            <!--                    <compilerSource>11</compilerSource>-->
+            <!--                    <compilerCompliance>11</compilerCompliance>-->
+            <!--                    <compilerTargetPlatform>11</compilerTargetPlatform>-->
+            <!--                    <lineEnding>LF</lineEnding>-->
+            <!--                    <encoding>UTF-8</encoding>-->
+            <!--                    &lt;!&ndash;                    <overrideConfigCompilerVersion>true</overrideConfigCompilerVersion>&ndash;&gt;-->
+            <!--                </configuration>-->
+            <!--            </plugin>-->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>${plugin-javadoc-version}</version>
+                <configuration>
+                    <javadocExecutable>${java.home}/bin/javadoc</javadocExecutable>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>attach-javadoc</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>${plugin-surefire-version}</version>
+            </plugin>
+        </plugins>
+    </build>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${slf4j-version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-text</artifactId>
+            <version>${commons-text-version}</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>${commons-io-version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <version>${junit5-version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+            <version>${slf4j-version}</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <modules>
+        <module>json</module>
+        <module>json-schema</module>
+        <module>json-surfer</module>
+        <module>common</module>
+        <module>collections</module>
+    </modules>
+
+</project>
