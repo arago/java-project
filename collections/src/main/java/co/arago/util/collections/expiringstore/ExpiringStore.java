@@ -153,7 +153,7 @@ public class ExpiringStore<T> implements AutoCloseable {
      * @param id Id of the message
      */
     public synchronized void remove(String id) {
-        ExpiringMessage message = storeMap.get(id);
+        ExpiringMessage message = storeMap.remove(id);
         if (message != null)
             message.cancel();
     }
