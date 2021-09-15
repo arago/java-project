@@ -16,7 +16,7 @@ public class Cloner {
      * @throws IOException            When source is not serializable.
      * @throws ClassNotFoundException When casting to clazz fails.
      */
-    static <T> T clone(T source, Class<T> clazz) throws IOException, ClassNotFoundException {
+    public static <T> T clone(T source, Class<T> clazz) throws IOException, ClassNotFoundException {
         if (source == null)
             return null;
 

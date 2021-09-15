@@ -33,13 +33,13 @@ public class GetByJsonPath {
     }
 
     /**
-     * Static constructor. Uses JsonTools.DEFAULT.
+     * Static constructor. Uses JsonUtil.DEFAULT.
      *
      * @param jsonPath The jsonPath to use
      * @return New instance of {@link GetByJsonPath}
      */
     public static GetByJsonPath newWith(String jsonPath) {
-        return newWith(jsonPath, JsonTools.DEFAULT);
+        return newWith(jsonPath, JsonUtil.DEFAULT);
     }
 
     /**

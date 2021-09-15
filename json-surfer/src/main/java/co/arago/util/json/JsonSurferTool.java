@@ -27,7 +27,7 @@ public class JsonSurferTool {
      * @return New instance of {@link #JsonSurferTool(JsonTools)}.
      */
     public static JsonSurferTool newInstance() {
-        return newInstance(JsonTools.DEFAULT);
+        return newInstance(JsonUtil.DEFAULT);
     }
 
     /**

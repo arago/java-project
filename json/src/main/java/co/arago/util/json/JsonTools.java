@@ -26,7 +26,7 @@ public class JsonTools {
 
     private final static Logger log = LoggerFactory.getLogger(JsonTools.class);
 
-    protected static abstract class Conf<T extends Conf<T>> {
+    public static abstract class Conf<T extends Conf<T>> {
         protected boolean skipNullMapValues = false;
         protected boolean failOnUnknownProperties = false;
         protected boolean failOnEmptyBeans = false;
@@ -122,11 +122,6 @@ public class JsonTools {
             return new JsonTools(this);
         }
     }
-
-    /**
-     * The default instance of the JsonTools
-     */
-    public static final JsonTools DEFAULT = JsonTools.newBuilder().build();
 
     /**
      * Json mapper who does the mapping
@@ -564,6 +559,29 @@ public class JsonTools {
      */
     public Object toPOJO(InputStream inputStream) throws IOException {
         return toObject(inputStream, Object.class);
+    }
+
+    /**
+     * Clone a JSON object via Jackson.
+     * <p>
+     * This might not be an exact copy since some configuration parameters might
+     * interfere with this.
+     * <p>
+     * The class to be cloned needs either a default constructor and have its fields or setters and getters public, or
+     * it needs a Constructor with valid @{@link com.fasterxml.jackson.annotation.JsonCreator}
+     * / @{@link com.fasterxml.jackson.annotation.JsonProperty} annotations.
+     *
+     * @param object The object to clone.
+     * @param clazz  The class to cast the result to.
+     * @param <T>    Type of desired object.
+     * @return The clone of object or null if object is null.
+     * @throws JsonProcessingException If the object cannot be transformed to a JSON String.
+     */
+    public <T> T clone(T object, Class<T> clazz) throws JsonProcessingException {
+        if (object == null)
+            return null;
+
+        return toObject(toString(object), clazz);
     }
 }
 

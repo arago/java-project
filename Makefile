@@ -1,4 +1,4 @@
-VERSION := $(shell cat ./VERSION)
+PACKAGE_VERSION := $(shell cat ./VERSION)
 
 compile: set_version
 	mvn $(MVN_OPTIONS) compile
@@ -10,7 +10,7 @@ deploy: set_version
 	mvn $(MVN_OPTIONS) deploy
 
 set_version:
-	mvn $(MVN_OPTIONS) versions:set -DallowSnapshots=true -DnewVersion="$(VERSION)" || true
+	mvn $(MVN_OPTIONS) versions:set -DallowSnapshots=true -DnewVersion="$(PACKAGE_VERSION)" || true
 	mvn $(MVN_OPTIONS) versions:commit
 
 clean:

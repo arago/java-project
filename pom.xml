@@ -7,13 +7,17 @@
     <groupId>co.arago</groupId>
     <artifactId>java-project</artifactId>
     <name>${project.artifactId}</name>
-    <version>0.0.13-SNAPSHOT</version>
+    <version>0.0.18-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <organization>
         <name>arago GmbH</name>
         <url>https://www.arago.co</url>
     </organization>
+
+    <description>
+        This is the core project for the arago utility jars. It defines common plugins and dependencies.
+    </description>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -132,6 +136,7 @@
                 <version>${plugin-javadoc-version}</version>
                 <configuration>
                     <javadocExecutable>${java.home}/bin/javadoc</javadocExecutable>
+                    <quiet>true</quiet>
                 </configuration>
                 <executions>
                     <execution>

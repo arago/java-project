@@ -37,7 +37,7 @@ class JsonSurferToolTest {
     void getAllByJsonPath() throws JsonProcessingException {
         Collection<Integer> result = GetByJsonPath.newWith("$.Key3[1:3]").getAll(jsonData, Integer.class);
 
-        log.info(JsonTools.DEFAULT.toString(result));
+        log.info(JsonUtil.DEFAULT.toString(result));
 
         assertEquals(result, List.of(2, 3));
     }
