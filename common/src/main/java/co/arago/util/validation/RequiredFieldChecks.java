@@ -20,7 +20,37 @@ public interface RequiredFieldChecks {
      * @throws NullPointerException when item == null
      */
     default <N> N notNull(N item, String name) {
-        return Objects.requireNonNull(item, "Field '${name}' is required and cannot be null.");
+        return Objects.requireNonNull(item, "Field '" + name + "' is required and cannot be null.");
+    }
+
+    /**
+     * Check for null values. Used with required parameters of builder fields.
+     *
+     * @param item The item to check for null
+     * @param name Name of the item for the exception message
+     * @param <N>  Type of any item.
+     * @return The item itself
+     * @throws NullPointerException when item == null
+     */
+    default <N> N[] notNull(String name, N[] item) {
+        if (item == null)
+            throw new IllegalArgumentException("Field '" + name + "' is required and cannot be null.");
+        return item;
+    }
+
+    /**
+     * Check for null values. Used with required parameters of builder fields.
+     *
+     * @param item The item to check for null
+     * @param name Name of the item for the exception message
+     * @param <N>  Type of any item.
+     * @return The item itself
+     * @throws NullPointerException when item == null
+     */
+    default <N> N[] notEmpty(String name, N[] item) {
+        if (item == null || item.length == 0)
+            throw new IllegalArgumentException("Field '" + name + "' is required and cannot be null or empty.");
+        return item;
     }
 
     /**
