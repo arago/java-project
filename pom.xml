@@ -7,7 +7,7 @@
     <groupId>co.arago</groupId>
     <artifactId>java-project</artifactId>
     <name>${project.artifactId}</name>
-    <version>0.0.18-SNAPSHOT</version>
+    <version>0.0.20-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <organization>

@@ -7,12 +7,12 @@
     <parent>
         <artifactId>java-project</artifactId>
         <groupId>co.arago</groupId>
-        <version>0.0.18-SNAPSHOT</version>
+        <version>0.0.20-SNAPSHOT</version>
     </parent>
 
     <groupId>co.arago.util</groupId>
     <artifactId>json</artifactId>
-    <version>0.0.18-SNAPSHOT</version>
+    <version>0.0.20-SNAPSHOT</version>
 
     <description>
         Utility library for using JSON (via Jackson) with arago Java projects.

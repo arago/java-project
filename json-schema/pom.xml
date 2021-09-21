@@ -7,12 +7,12 @@
     <parent>
         <groupId>co.arago</groupId>
         <artifactId>java-project</artifactId>
-        <version>0.0.18-SNAPSHOT</version>
+        <version>0.0.20-SNAPSHOT</version>
     </parent>
 
     <groupId>co.arago.util</groupId>
     <artifactId>json-schema</artifactId>
-    <version>0.0.18-SNAPSHOT</version>
+    <version>0.0.20-SNAPSHOT</version>
 
     <description>
         Utility library for using JSON Schemas (via Jackson/mbknor-jackson-jsonschema) with arago Java projects.
@@ -22,7 +22,7 @@
         <dependency>
             <groupId>co.arago.util</groupId>
             <artifactId>json</artifactId>
-            <version>0.0.18-SNAPSHOT</version>
+            <version>0.0.20-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>com.kjetland</groupId>
