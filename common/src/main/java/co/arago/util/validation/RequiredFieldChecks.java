@@ -7,9 +7,9 @@ import java.util.Map;
 import java.util.Objects;
 
 /**
- * This interface provides value checking to the classes that implement it.
+ * This class provides value checking to the classes that implement it.
  */
-public interface RequiredFieldChecks {
+public abstract class RequiredFieldChecks {
     /**
      * Check for null values. Used with required parameters of builder fields.
      *
@@ -19,7 +19,7 @@ public interface RequiredFieldChecks {
      * @return The item itself
      * @throws NullPointerException when item == null
      */
-    static <N> N notNull(N item, String name) {
+    public static <N> N notNull(N item, String name) {
         return Objects.requireNonNull(item, "Field '" + name + "' is required and cannot be null.");
     }
 
@@ -32,7 +32,7 @@ public interface RequiredFieldChecks {
      * @return The item itself
      * @throws NullPointerException when item == null
      */
-    static <N> N[] notNull(String name, N[] item) {
+    public static <N> N[] notNull(String name, N[] item) {
         if (item == null)
             throw new IllegalArgumentException("Field '" + name + "' is required and cannot be null.");
         return item;
@@ -47,7 +47,7 @@ public interface RequiredFieldChecks {
      * @return The item itself
      * @throws NullPointerException when item == null
      */
-    static <N> N[] notEmpty(String name, N[] item) {
+    public static <N> N[] notEmpty(String name, N[] item) {
         if (item == null || item.length == 0)
             throw new IllegalArgumentException("Field '" + name + "' is required and cannot be null or empty.");
         return item;
@@ -61,7 +61,7 @@ public interface RequiredFieldChecks {
      * @return The item itself
      * @throws IllegalArgumentException when item is empty
      */
-    static String notEmpty(String item, String name) {
+    public static String notEmpty(String item, String name) {
         if (StringUtils.isEmpty(item))
             throw new IllegalArgumentException("Field '" + name + "' cannot be empty.");
         return item;
@@ -75,7 +75,7 @@ public interface RequiredFieldChecks {
      * @return The item itself
      * @throws IllegalArgumentException when item is empty
      */
-    static Collection<?> notEmpty(Collection<?> item, String name) {
+    public static Collection<?> notEmpty(Collection<?> item, String name) {
         if (item == null || item.isEmpty())
             throw new IllegalArgumentException("Collection '" + name + "' cannot be empty.");
         return item;
@@ -89,7 +89,7 @@ public interface RequiredFieldChecks {
      * @return The item itself
      * @throws IllegalArgumentException when item is empty
      */
-    static Map<?, ?> notEmpty(Map<?, ?> item, String name) {
+    public static Map<?, ?> notEmpty(Map<?, ?> item, String name) {
         if (item == null || item.isEmpty())
             throw new IllegalArgumentException("Map '" + name + "' cannot be empty.");
         return item;
@@ -103,7 +103,7 @@ public interface RequiredFieldChecks {
      * @return The item itself
      * @throws IllegalArgumentException when item is blank
      */
-    static String notBlank(String item, String name) {
+    public static String notBlank(String item, String name) {
         if (StringUtils.isBlank(item))
             throw new IllegalArgumentException("Field '" + name + "' cannot be blank.");
         return item;
@@ -115,7 +115,7 @@ public interface RequiredFieldChecks {
      * @param message The message to display.
      * @throws IllegalArgumentException with the message.
      */
-    static void anyError(String message) {
+    public static void anyError(String message) {
         throw new IllegalArgumentException(message);
     }
 }
