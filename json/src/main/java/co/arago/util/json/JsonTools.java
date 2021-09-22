@@ -512,11 +512,11 @@ public class JsonTools {
     }
 
     /**
-     * This function tries to transform either a String or any Object into another object via Jackson.
+     * This function tries to transform either a String or any Object into a map via Jackson.
      *
      * @param json The json data. String or any Object. String uses {@link JsonTools#toObject(String, String)},
      *             everything else uses {@link JsonTools#toObject(Object, String)}. If the string is blank, null is returned.
-     * @return The generated object or null if no object can be created (String is blank for instance).
+     * @return The generated map or null if no map can be created (String is blank for instance).
      * @throws IOException When the json is invalid
      */
     public Object toObjectEx(Object json) throws IOException {

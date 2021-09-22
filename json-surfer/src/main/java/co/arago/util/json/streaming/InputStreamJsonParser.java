@@ -4,6 +4,10 @@ import org.jsfr.json.ResumableParser;
 
 import java.io.InputStream;
 
+/**
+ * A json reader that receives data via an InputStream. Whenever a chunk of json data defined by jsonPath is ready to
+ * be processed it calls the callback with the chunk of JSON data.
+ */
 public class InputStreamJsonParser extends AbstractJsonStreamParser {
 
     public abstract static class Conf<T extends Conf<T>> extends AbstractJsonStreamParser.Conf<T> {
@@ -72,7 +76,7 @@ public class InputStreamJsonParser extends AbstractJsonStreamParser {
      * @param callback Callback for the matching keys (JsonPath) of {@link #jsonCuts}.
      * @return New instance of {@link InputStreamJsonParser.Builder}
      */
-    public static Builder newBuilder(JsonStreamCallback callback) {
+    public static Conf<?> newBuilder(JsonStreamCallback callback) {
         return new InputStreamJsonParser.Builder(callback);
     }
 

@@ -1,7 +1,7 @@
 package co.arago.util.json;
 
+import co.arago.util.json.path.GetByJsonPath;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -7,12 +7,12 @@
     <parent>
         <groupId>co.arago</groupId>
         <artifactId>java-project</artifactId>
-        <version>0.0.20-SNAPSHOT</version>
+        <version>0.1.0</version>
     </parent>
 
     <groupId>co.arago.util</groupId>
     <artifactId>json-surfer</artifactId>
-    <version>0.0.20-SNAPSHOT</version>
+    <version>0.1.0</version>
 
     <description>
         Utility library for using JSON Surfer (via Jackson/Jsurfer-jackson) with arago Java projects. This library
@@ -23,7 +23,7 @@
         <dependency>
             <groupId>co.arago.util</groupId>
             <artifactId>json</artifactId>
-            <version>0.0.20-SNAPSHOT</version>
+            <version>0.1.0</version>
         </dependency>
         <dependency>
             <groupId>com.github.jsurfer</groupId>

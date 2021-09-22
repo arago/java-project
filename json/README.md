@@ -1,28 +1,14 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
+# Json
 
-    <parent>
-        <artifactId>java-project</artifactId>
-        <groupId>co.arago</groupId>
-        <version>0.1.0</version>
-    </parent>
+This library provides the `JsonTools` and the `JsonUtils`. These classes make handling of JSON within your project
+fast and easy.
 
-    <groupId>co.arago.util</groupId>
-    <artifactId>json</artifactId>
-    <version>0.1.0</version>
+Wrapper around the Jackson Mapper: `co.arago.util.json.JsonTools` 
 
-    <description>
-        Utility library for using JSON (via Jackson) with arago Java projects.
-    </description>
+Common static instances of JsonTools: `co.arago.util.json.JsonUtils`
 
-    <properties>
-        <jackson-version>2.12.5</jackson-version>
-    </properties>
+## Dependencies
 
-    <dependencies>
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-core</artifactId>
@@ -48,6 +34,3 @@
             <artifactId>jackson-datatype-jsr310</artifactId>
             <version>${jackson-version}</version>
         </dependency>
-    </dependencies>
-
-</project>

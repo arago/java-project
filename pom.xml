@@ -6,8 +6,7 @@
 
     <groupId>co.arago</groupId>
     <artifactId>java-project</artifactId>
-    <name>${project.artifactId}</name>
-    <version>0.0.20-SNAPSHOT</version>
+    <version>0.1.0</version>
     <packaging>pom</packaging>
 
     <organization>
@@ -15,9 +14,23 @@
         <url>https://www.arago.co</url>
     </organization>
 
+    <name>${project.artifactId}</name>
     <description>
         This is the core project for the arago utility jars. It defines common plugins and dependencies.
     </description>
+    <url>https://github.com/arago/java-project</url>
+
+    <scm>
+        <url>scm:git:https://github.com/arago/java-project.git</url>
+    </scm>
+
+    <licenses>
+        <license>
+            <name>MIT License</name>
+            <url>https://opensource.org/licenses/MIT</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -31,6 +44,7 @@
         <plugin-resources-version>3.0.2</plugin-resources-version>
         <plugin-javadoc-version>3.0.1</plugin-javadoc-version>
         <plugin-surefire-version>2.22.0</plugin-surefire-version>
+        <plugin-gpg-version>3.0.1</plugin-gpg-version>
 
         <slf4j-version>1.7.32</slf4j-version>
         <commons-text-version>1.9</commons-text-version>
@@ -41,14 +55,14 @@
     </properties>
 
     <distributionManagement>
-<!--        <repository>-->
-<!--            <id>arago-private</id>-->
-<!--            <uniqueVersion>false</uniqueVersion>-->
-<!--        </repository>-->
-<!--        <snapshotRepository>-->
-<!--            <id>arago-private</id>-->
-<!--            <uniqueVersion>false</uniqueVersion>-->
-<!--        </snapshotRepository>-->
+        <!--        <repository>-->
+        <!--            <id>arago-private</id>-->
+        <!--            <uniqueVersion>false</uniqueVersion>-->
+        <!--        </repository>-->
+        <!--        <snapshotRepository>-->
+        <!--            <id>arago-private</id>-->
+        <!--            <uniqueVersion>false</uniqueVersion>-->
+        <!--        </snapshotRepository>-->
         <repository>
             <id>github</id>
             <uniqueVersion>false</uniqueVersion>
@@ -151,6 +165,24 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>${plugin-surefire-version}</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-gpg-plugin</artifactId>
+                <version>${plugin-gpg-version}</version>
+                <executions>
+                    <execution>
+                        <id>sign-artifacts</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>sign</goal>
+                        </goals>
+                        <configuration>
+                            <keyname>${gpg.keyname}</keyname>
+                            <passphraseServerId>${gpg.keyname}</passphraseServerId>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>

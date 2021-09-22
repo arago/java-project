@@ -1,5 +1,8 @@
-package co.arago.util.json;
+package co.arago.util.json.path;
 
+import co.arago.util.json.JsonSurferTool;
+import co.arago.util.json.JsonTools;
+import co.arago.util.json.JsonUtil;
 import org.jsfr.json.exception.JsonSurfingException;
 
 import java.util.Collection;
@@ -28,8 +31,8 @@ public class GetByJsonPath {
         this.jsonPath = jsonPath;
         this.jsonPathParser = JsonPathParser.newBuilder()
                 .setJsonSurferTool(JsonSurferTool.newInstance(jsonTools))
-                .addJsonPath(jsonPath).
-                build();
+                .addJsonPath(jsonPath)
+                .build();
     }
 
     /**

@@ -1,5 +1,7 @@
-package co.arago.util.json;
+package co.arago.util.json.path;
 
+import co.arago.util.json.AbstractJsonParser;
+import co.arago.util.json.JsonSurferTool;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.jsfr.json.Collector;
 import org.jsfr.json.ValueBox;
@@ -48,7 +50,7 @@ public class JsonPathParser extends AbstractJsonParser {
      *
      * @return New Builder instance.
      */
-    public static JsonPathParser.Builder newBuilder() {
+    public static Conf<?> newBuilder() {
         return new JsonPathParser.Builder();
     }
 

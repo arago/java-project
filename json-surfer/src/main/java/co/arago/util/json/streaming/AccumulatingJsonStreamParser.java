@@ -8,8 +8,8 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 
 /**
- * A json reader that receives chunks of json data and accumulates them in a nonblockingparser until a
- * chunk of json data defined by jsonPath is ready to be processed. Calls the callback with the chunk of json data.
+ * A json reader that receives chunks of json data and accumulates them in a non-blocking-parser until a
+ * chunk of json data defined by jsonPath is ready to be processed. Calls the callback with the chunk of JSON data.
  */
 public class AccumulatingJsonStreamParser extends AbstractJsonStreamParser implements AutoCloseable {
 
@@ -83,7 +83,7 @@ public class AccumulatingJsonStreamParser extends AbstractJsonStreamParser imple
      * @param callback Callback for the matching keys (JsonPath) of {@link #jsonCuts}.
      * @return New instance of {@link AccumulatingJsonStreamParser.Builder}
      */
-    public static Builder newBuilder(JsonStreamCallback callback) {
+    public static Conf<?> newBuilder(JsonStreamCallback callback) {
         return new AccumulatingJsonStreamParser.Builder(callback);
     }
 
