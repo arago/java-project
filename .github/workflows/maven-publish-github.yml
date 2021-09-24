@@ -4,8 +4,6 @@
 name: Maven CI
 
 on:
-  release:
-    types: [ created ]
   push:
     tags:
       - t*
@@ -31,7 +29,7 @@ jobs:
         run: |
           cat <(echo -e "${{ secrets.ARAGO_GPG_KEY }}") | gpg --batch --import
           gpg --list-secret-keys --keyid-format LONG
-      - name: Publish to Repository
+      - name: Publish to GitHub Repository
         run: make deploy
         env:
           MVN_OPTIONS: "--batch-mode --no-transfer-progress -Dgpg.passphrase=${{ secrets.ARAGO_GPG_KEY_PASSWORD }}"
