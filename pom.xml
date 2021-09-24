@@ -20,6 +20,20 @@
     </description>
     <url>https://github.com/arago/java-project</url>
 
+    <developers>
+        <developer>
+            <id>whuebner</id>
+            <name>Wolfgang Hübner</name>
+            <email>whuebner@arago.co</email>
+            <organization>arago GmbH</organization>
+            <organizationUrl>https://www.arago.co</organizationUrl>
+            <roles>
+                <role>Developer</role>
+            </roles>
+            <timezone>Europe/Berlin</timezone>
+        </developer>
+    </developers>
+
     <scm>
         <url>scm:git:https://github.com/arago/java-project.git</url>
     </scm>
