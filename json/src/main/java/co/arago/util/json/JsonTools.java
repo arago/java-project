@@ -583,5 +583,29 @@ public class JsonTools {
 
         return toObject(toString(object), clazz);
     }
+
+    /**
+     * Clone a JSON object via Jackson.
+     * <p>
+     * This might not be an exact copy since some configuration parameters might
+     * interfere with this.
+     * <p>
+     * The class to be cloned needs either a default constructor and have its fields or setters and getters public, or
+     * it needs a Constructor with valid @{@link com.fasterxml.jackson.annotation.JsonCreator}
+     * / @{@link com.fasterxml.jackson.annotation.JsonProperty} annotations.
+     *
+     * @param object        The object to clone.
+     * @param typeReference The type reference for the result.
+     * @param <T>           Type of desired object.
+     * @return The clone of object or null if object is null.
+     * @throws JsonProcessingException If the object cannot be transformed to a JSON String.
+     */
+    public <T> T clone(T object, TypeReference<T> typeReference) throws JsonProcessingException {
+        if (object == null)
+            return null;
+
+        return toObject(toString(object), typeReference);
+    }
+
 }
 
