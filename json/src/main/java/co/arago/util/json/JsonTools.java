@@ -575,13 +575,12 @@ public class JsonTools {
      * @param clazz  The class to cast the result to.
      * @param <T>    Type of desired object.
      * @return The clone of object or null if object is null.
-     * @throws JsonProcessingException If the object cannot be transformed to a JSON String.
      */
-    public <T> T clone(T object, Class<T> clazz) throws JsonProcessingException {
+    public <T> T clone(T object, Class<T> clazz) {
         if (object == null)
             return null;
 
-        return toObject(toString(object), clazz);
+        return transformObject(object, clazz);
     }
 
     /**
@@ -598,13 +597,12 @@ public class JsonTools {
      * @param typeReference The type reference for the result.
      * @param <T>           Type of desired object.
      * @return The clone of object or null if object is null.
-     * @throws JsonProcessingException If the object cannot be transformed to a JSON String.
      */
-    public <T> T clone(T object, TypeReference<T> typeReference) throws JsonProcessingException {
+    public <T> T clone(T object, TypeReference<T> typeReference) {
         if (object == null)
             return null;
 
-        return toObject(toString(object), typeReference);
+        return transformObject(object, typeReference);
     }
 
 }
