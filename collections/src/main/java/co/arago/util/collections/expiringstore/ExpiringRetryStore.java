@@ -19,14 +19,15 @@ public class ExpiringRetryStore<T> extends ExpiringStore<T> {
     private final static Logger log = LoggerFactory.getLogger(ExpiringRetryStore.class);
 
     /**
-     * A  message with an expire and retry. The item is removed from its container when timeout has run out.
+     * A message with an expire and retry. The item is removed from its container when timeout has run out.
      */
-    protected class ExpiringRetryMessage extends ExpiringMessage {
+    protected static class ExpiringRetryMessage<T> extends ExpiringMessage<T> {
         protected int retriesLeft;
 
         /**
          * Constructor
          *
+         * @param parent     Reference to the ExpiringRetryStore.
          * @param expiresAt  Timestamp after which the message expires and will be removed from the
          *                   {@link ExpiringStore#storeMap}.
          * @param id         The unique id of the message
@@ -34,8 +35,9 @@ public class ExpiringRetryStore<T> extends ExpiringStore<T> {
          * @param maxRetries Max retries (default is 4)
          * @throws StoreItemExpiredException When the expiresAt is already expired.
          */
-        ExpiringRetryMessage(Instant expiresAt, String id, T message, int maxRetries) throws StoreItemExpiredException {
-            super(expiresAt, id, message);
+        ExpiringRetryMessage(ExpiringRetryStore<T> parent, Instant expiresAt, String id, T message, int maxRetries)
+                throws StoreItemExpiredException {
+            super(parent, expiresAt, id, message);
             this.retriesLeft = maxRetries;
         }
     }
@@ -57,6 +59,7 @@ public class ExpiringRetryStore<T> extends ExpiringStore<T> {
      * @param maxRetries Maximum amount of retries.
      */
     public ExpiringRetryStore(int maxRetries) {
+        super("RetryStore-" + counter.incrementAndGet());
         this.retriesLeft = maxRetries;
     }
 
@@ -70,8 +73,9 @@ public class ExpiringRetryStore<T> extends ExpiringStore<T> {
      * @throws StoreItemExpiredException When the expiresAt is already expired.
      * @throws StoreItemExistsException  When the message already exists.
      */
-    public synchronized void add(Instant expiresAt, String id, T message) throws StoreItemExpiredException, StoreItemExistsException {
-        addInternal(new ExpiringRetryMessage(expiresAt, id, message, retriesLeft));
+    public synchronized void add(Instant expiresAt, String id, T message)
+            throws StoreItemExpiredException, StoreItemExistsException {
+        addInternal(new ExpiringRetryMessage<T>(this, expiresAt, id, message, retriesLeft));
     }
 
     /**
@@ -85,7 +89,7 @@ public class ExpiringRetryStore<T> extends ExpiringStore<T> {
      * @throws StoreItemExpiredException When the expiresAt is already expired.
      */
     public synchronized void put(Instant expiresAt, String id, T message) throws StoreItemExpiredException {
-        putInternal(new ExpiringRetryMessage(expiresAt, id, message, retriesLeft));
+        putInternal(new ExpiringRetryMessage<T>(this, expiresAt, id, message, retriesLeft));
     }
 
     /**
@@ -96,22 +100,18 @@ public class ExpiringRetryStore<T> extends ExpiringStore<T> {
      * @return The message or null when message got discarded or no message with this id exists.
      */
     public synchronized T retryGet(String id) {
-        ExpiringMessage existingMessage = storeMap.get(id);
-        if (existingMessage == null)
+        ExpiringRetryMessage<T> existingRetryMessage = (ExpiringRetryMessage<T>) storeMap.get(id);
+        if (existingRetryMessage == null)
             return null;
 
-        if (existingMessage instanceof ExpiringRetryStore<?>.ExpiringRetryMessage) {
-            ExpiringRetryMessage existingRetryMessage = (ExpiringRetryMessage) existingMessage;
-
-            if (existingRetryMessage.retriesLeft <= 0) {
-                log.debug("Discard message {} because no retries left.", id);
-                remove(id);
-                return null;
-            }
-
-            existingRetryMessage.retriesLeft--;
+        if (existingRetryMessage.retriesLeft <= 0) {
+            log.debug("Discard message {} because no retries left.", id);
+            remove(id);
+            return null;
         }
 
-        return get(id);
+        existingRetryMessage.retriesLeft--;
+
+        return existingRetryMessage.getMessage();
     }
 }

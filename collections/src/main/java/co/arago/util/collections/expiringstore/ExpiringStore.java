@@ -18,15 +18,16 @@ public class ExpiringStore<T> implements AutoCloseable {
 
     private final static Logger log = LoggerFactory.getLogger(ExpiringStore.class);
 
-    private static final AtomicInteger counter = new AtomicInteger(0);
+    protected static final AtomicInteger counter = new AtomicInteger(0);
 
     private final Timer timer;
     private final String name;
 
     /**
-     * A  message with an expire. The item is removed from its container when timeout has run out.
+     * A message with an expire. The item is removed from its container when timeout has run out.
      */
-    protected class ExpiringMessage extends TimerTask {
+    protected static class ExpiringMessage<T> extends TimerTask {
+        protected final ExpiringStore<T> parent;
         protected T message;
         protected String id;
         protected Instant expiresAt;
@@ -34,13 +35,16 @@ public class ExpiringStore<T> implements AutoCloseable {
         /**
          * Constructor
          *
+         * @param parent    Reference to the ExpiringStore.
          * @param expiresAt Timestamp after which the message expires and will be removed from the
          *                  {@link ExpiringStore#storeMap}.
          * @param id        The unique id of the message
          * @param message   The original message
          * @throws StoreItemExpiredException When the expiresAt is already expired.
          */
-        public ExpiringMessage(Instant expiresAt, String id, T message) throws StoreItemExpiredException {
+        public ExpiringMessage(ExpiringStore<T> parent, Instant expiresAt, String id, T message)
+                throws StoreItemExpiredException {
+            this.parent = parent;
             if (expiresAt.isBefore(Instant.now())) {
                 throw new StoreItemExpiredException("Not adding " +
                         message.getClass().getSimpleName() + " " + id +
@@ -50,7 +54,7 @@ public class ExpiringStore<T> implements AutoCloseable {
             this.id = id;
             this.message = message;
             this.expiresAt = expiresAt;
-            timer.schedule(this, Date.from(expiresAt));
+            this.parent.timer.schedule(this, Date.from(expiresAt));
         }
 
         /**
@@ -62,7 +66,7 @@ public class ExpiringStore<T> implements AutoCloseable {
                     message.getClass().getSimpleName(),
                     id,
                     expiresAt);
-            remove(id);
+            parent.remove(id);
         }
 
         /**
@@ -76,7 +80,7 @@ public class ExpiringStore<T> implements AutoCloseable {
 
     }
 
-    protected Map<String, ExpiringMessage> storeMap = new HashMap<>();
+    protected Map<String, ExpiringMessage<T>> storeMap = new HashMap<>();
 
     /**
      * Constructor
@@ -103,8 +107,8 @@ public class ExpiringStore<T> implements AutoCloseable {
      * @param expiringMessage Message to add
      * @throws StoreItemExistsException When the expiringMessage already exists.
      */
-    protected void addInternal(ExpiringMessage expiringMessage) throws StoreItemExistsException {
-        ExpiringMessage existingMessage = storeMap.putIfAbsent(expiringMessage.id, expiringMessage);
+    protected void addInternal(ExpiringMessage<T> expiringMessage) throws StoreItemExistsException {
+        ExpiringMessage<T> existingMessage = storeMap.putIfAbsent(expiringMessage.id, expiringMessage);
         if (existingMessage != null) {
             throw new StoreItemExistsException("Not adding " + expiringMessage.message.getClass().getSimpleName() +
                     " " + expiringMessage.id + " because it already exists.");
@@ -116,8 +120,8 @@ public class ExpiringStore<T> implements AutoCloseable {
      *
      * @param expiringMessage Message to put
      */
-    protected void putInternal(ExpiringMessage expiringMessage) {
-        ExpiringMessage existingMessage = storeMap.put(expiringMessage.id, expiringMessage);
+    protected void putInternal(ExpiringMessage<T> expiringMessage) {
+        ExpiringMessage<T> existingMessage = storeMap.put(expiringMessage.id, expiringMessage);
         if (existingMessage != null)
             existingMessage.cancel();
     }
@@ -131,8 +135,9 @@ public class ExpiringStore<T> implements AutoCloseable {
      * @throws StoreItemExpiredException When the expiresAt is already expired.
      * @throws StoreItemExistsException  When the message already exists.
      */
-    public synchronized void add(Instant expiresAt, String id, T message) throws StoreItemExpiredException, StoreItemExistsException {
-        addInternal(new ExpiringMessage(expiresAt, id, message));
+    public synchronized void add(Instant expiresAt, String id, T message)
+            throws StoreItemExpiredException, StoreItemExistsException {
+        addInternal(new ExpiringMessage<T>(this, expiresAt, id, message));
     }
 
     /**
@@ -144,7 +149,7 @@ public class ExpiringStore<T> implements AutoCloseable {
      * @throws StoreItemExpiredException When the expiresAt is already expired.
      */
     public synchronized void put(Instant expiresAt, String id, T message) throws StoreItemExpiredException {
-        putInternal(new ExpiringMessage(expiresAt, id, message));
+        putInternal(new ExpiringMessage<T>(this, expiresAt, id, message));
     }
 
     /**
@@ -153,7 +158,7 @@ public class ExpiringStore<T> implements AutoCloseable {
      * @param id Id of the message
      */
     public synchronized void remove(String id) {
-        ExpiringMessage message = storeMap.remove(id);
+        ExpiringMessage<T> message = storeMap.remove(id);
         if (message != null)
             message.cancel();
     }
@@ -165,7 +170,7 @@ public class ExpiringStore<T> implements AutoCloseable {
      * @return The stored message
      */
     public synchronized T get(String id) {
-        ExpiringMessage message = storeMap.get(id);
+        ExpiringMessage<T> message = storeMap.get(id);
         return (message != null ? message.getMessage() : null);
     }
 
