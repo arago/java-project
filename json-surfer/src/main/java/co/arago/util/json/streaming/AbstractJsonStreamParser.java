@@ -65,7 +65,7 @@ public abstract class AbstractJsonStreamParser extends AbstractJsonParser {
                         (context.getCurrentFieldName() == null ? "data" : context.getCurrentFieldName()) :
                         this.field);
                 Object parsedValue = (value instanceof JsonNode) ?
-                        jsonSurferTool.getJsonTools().toObject(value, Object.class) :
+                        jsonSurferTool.getJsonTools().transformObject(value, Object.class) :
                         value;
 
                 callback.dataCallback(field, parsedValue);
