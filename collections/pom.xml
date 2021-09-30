@@ -7,12 +7,11 @@
     <parent>
         <artifactId>java-project</artifactId>
         <groupId>co.arago</groupId>
-        <version>0.1.3</version>
+        <version>0.2.1</version>
     </parent>
 
     <groupId>co.arago.util</groupId>
     <artifactId>collections</artifactId>
-    <version>0.1.3</version>
 
     <description>
         Utility library for collections.

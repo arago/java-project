@@ -315,7 +315,7 @@ public class JsonTools {
     }
 
     /**
-     * Transforms a JSON structure given as Object into an Object.
+     * Transforms a JSON structure given as String into an Object.
      *
      * @param json        The JSON structure to convert (String)
      * @param targetClass The target type of object to create
@@ -338,7 +338,7 @@ public class JsonTools {
      * @param <T>         Type of the object
      * @return The created Object
      */
-    public <T> T toObject(Object json, Class<T> targetClass, Map<String, Object> injectMap) {
+    public <T> T transformObject(Object json, Class<T> targetClass, Map<String, Object> injectMap) {
         JsonMapper copy = mapper.copy();
         copy.setInjectableValues(new InjectableValues.Std(injectMap));
         return copy.convertValue(json, targetClass);
@@ -352,8 +352,8 @@ public class JsonTools {
      * @return The created Object
      * @throws ClassNotFoundException When the className is no name of a valid class
      */
-    public Object toObject(Object json, String className) throws ClassNotFoundException {
-        return toObject(json, (Class<?>) Class.forName(className));
+    public Object transformObject(Object json, String className) throws ClassNotFoundException {
+        return transformObject(json, (Class<?>) Class.forName(className));
     }
 
     /**
@@ -364,7 +364,7 @@ public class JsonTools {
      * @param <T>         Type of the object
      * @return The created Object
      */
-    public <T> T toObject(Object json, Class<T> targetClass) {
+    public <T> T transformObject(Object json, Class<T> targetClass) {
         return mapper.convertValue(json, targetClass);
     }
 
@@ -377,7 +377,7 @@ public class JsonTools {
      * @param <T>           Type of the object
      * @return The created Object
      */
-    public <T> T toObject(Object json, TypeReference<T> typeReference) {
+    public <T> T transformObject(Object json, TypeReference<T> typeReference) {
         return mapper.convertValue(json, typeReference);
     }
 
@@ -495,7 +495,7 @@ public class JsonTools {
      * This function tries to transform either a String or any Object into another object via Jackson.
      *
      * @param json      The json data. String or any Object. String uses {@link JsonTools#toObject(String, String)},
-     *                  everything else uses {@link JsonTools#toObject(Object, String)}. If the string is blank, null is returned.
+     *                  everything else uses {@link JsonTools#transformObject(Object, String)}. If the string is blank, null is returned.
      * @param className Name of the resulting class that shall be created. The default is {@link Map}.
      * @return The generated object or null if no object can be created (String is blank for instance).
      * @throws ClassNotFoundException  When the className is not the name of a valid class.
@@ -506,7 +506,7 @@ public class JsonTools {
             String str = (String) json;
             return str.isBlank() ? null : toObject(str, (Class<?>) Class.forName(className));
         } else {
-            return toObject(json, (Class<?>) Class.forName(className));
+            return transformObject(json, (Class<?>) Class.forName(className));
         }
 
     }
@@ -515,7 +515,7 @@ public class JsonTools {
      * This function tries to transform either a String or any Object into a map via Jackson.
      *
      * @param json The json data. String or any Object. String uses {@link JsonTools#toObject(String, String)},
-     *             everything else uses {@link JsonTools#toObject(Object, String)}. If the string is blank, null is returned.
+     *             everything else uses {@link JsonTools#transformObject(Object, String)}. If the string is blank, null is returned.
      * @return The generated map or null if no map can be created (String is blank for instance).
      * @throws IOException When the json is invalid
      */
@@ -575,13 +575,35 @@ public class JsonTools {
      * @param clazz  The class to cast the result to.
      * @param <T>    Type of desired object.
      * @return The clone of object or null if object is null.
-     * @throws JsonProcessingException If the object cannot be transformed to a JSON String.
      */
-    public <T> T clone(T object, Class<T> clazz) throws JsonProcessingException {
+    public <T> T clone(T object, Class<T> clazz) {
         if (object == null)
             return null;
 
-        return toObject(toString(object), clazz);
+        return transformObject(object, clazz);
     }
+
+    /**
+     * Clone a JSON object via Jackson.
+     * <p>
+     * This might not be an exact copy since some configuration parameters might
+     * interfere with this.
+     * <p>
+     * The class to be cloned needs either a default constructor and have its fields or setters and getters public, or
+     * it needs a Constructor with valid @{@link com.fasterxml.jackson.annotation.JsonCreator}
+     * / @{@link com.fasterxml.jackson.annotation.JsonProperty} annotations.
+     *
+     * @param object        The object to clone.
+     * @param typeReference The type reference for the result.
+     * @param <T>           Type of desired object.
+     * @return The clone of object or null if object is null.
+     */
+    public <T> T clone(T object, TypeReference<T> typeReference) {
+        if (object == null)
+            return null;
+
+        return transformObject(object, typeReference);
+    }
+
 }
 

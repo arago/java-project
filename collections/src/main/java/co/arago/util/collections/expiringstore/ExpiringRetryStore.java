@@ -2,6 +2,7 @@ package co.arago.util.collections.expiringstore;
 
 import co.arago.util.collections.expiringstore.exceptions.StoreItemExistsException;
 import co.arago.util.collections.expiringstore.exceptions.StoreItemExpiredException;
+import co.arago.util.collections.expiringstore.messages.ExpiringRetryMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -13,32 +14,11 @@ import java.time.Instant;
  *
  * @param <T> Type of items to store
  */
-public class ExpiringRetryStore<T> extends ExpiringStore<T> {
+public class ExpiringRetryStore<T> extends AbstractExpiringStore<T, ExpiringRetryMessage<T>> {
 
     static final int DEFAULT_RETRIES = 4;
     private final static Logger log = LoggerFactory.getLogger(ExpiringRetryStore.class);
 
-    /**
-     * A  message with an expire and retry. The item is removed from its container when timeout has run out.
-     */
-    protected class ExpiringRetryMessage extends ExpiringMessage {
-        protected int retriesLeft;
-
-        /**
-         * Constructor
-         *
-         * @param expiresAt  Timestamp after which the message expires and will be removed from the
-         *                   {@link ExpiringStore#storeMap}.
-         * @param id         The unique id of the message
-         * @param message    The original message
-         * @param maxRetries Max retries (default is 4)
-         * @throws StoreItemExpiredException When the expiresAt is already expired.
-         */
-        ExpiringRetryMessage(Instant expiresAt, String id, T message, int maxRetries) throws StoreItemExpiredException {
-            super(expiresAt, id, message);
-            this.retriesLeft = maxRetries;
-        }
-    }
 
     protected int retriesLeft;
 
@@ -57,6 +37,17 @@ public class ExpiringRetryStore<T> extends ExpiringStore<T> {
      * @param maxRetries Maximum amount of retries.
      */
     public ExpiringRetryStore(int maxRetries) {
+        this(maxRetries, "RetryStore-" + counter.incrementAndGet());
+    }
+
+    /**
+     * Constructor
+     *
+     * @param maxRetries Maximum amount of retries.
+     * @param name       Name of this store.
+     */
+    public ExpiringRetryStore(int maxRetries, String name) {
+        super(name);
         this.retriesLeft = maxRetries;
     }
 
@@ -70,8 +61,32 @@ public class ExpiringRetryStore<T> extends ExpiringStore<T> {
      * @throws StoreItemExpiredException When the expiresAt is already expired.
      * @throws StoreItemExistsException  When the message already exists.
      */
-    public synchronized void add(Instant expiresAt, String id, T message) throws StoreItemExpiredException, StoreItemExistsException {
-        addInternal(new ExpiringRetryMessage(expiresAt, id, message, retriesLeft));
+    public synchronized void add(
+            Instant expiresAt,
+            String id,
+            T message
+    ) throws StoreItemExpiredException, StoreItemExistsException {
+        addInternal(new ExpiringRetryMessage<T>(this, expiresAt, id, message, retriesLeft));
+    }
+
+    /**
+     * Add a message to the store if it does not exist. This message will also be removed when its "retriesLeft" is
+     * exhausted via {@link #retryGet(String)}.
+     *
+     * @param expiresAt   Timestamp after which the message expires
+     * @param id          The unique id of the message
+     * @param message     The message itself to store
+     * @param retriesLeft Explicitly set the retries for this message.
+     * @throws StoreItemExpiredException When the expiresAt is already expired.
+     * @throws StoreItemExistsException  When the message already exists.
+     */
+    public synchronized void add(
+            Instant expiresAt,
+            String id,
+            T message,
+            int retriesLeft
+    ) throws StoreItemExpiredException, StoreItemExistsException {
+        addInternal(new ExpiringRetryMessage<T>(this, expiresAt, id, message, retriesLeft));
     }
 
     /**
@@ -84,34 +99,52 @@ public class ExpiringRetryStore<T> extends ExpiringStore<T> {
      * @param message   The message itself to store
      * @throws StoreItemExpiredException When the expiresAt is already expired.
      */
-    public synchronized void put(Instant expiresAt, String id, T message) throws StoreItemExpiredException {
-        putInternal(new ExpiringRetryMessage(expiresAt, id, message, retriesLeft));
+    public synchronized void put(
+            Instant expiresAt,
+            String id,
+            T message
+    ) throws StoreItemExpiredException {
+        putInternal(new ExpiringRetryMessage<T>(this, expiresAt, id, message, retriesLeft));
     }
 
     /**
-     * Each call decreases {@link ExpiringRetryMessage#retriesLeft} for the message with this id.
+     * Put a message to the store, possibly overwriting existing messages with the same id.
+     * This message will also be removed when its "retriesLeft" is
+     * exhausted via {@link #retryGet(String)}.
+     *
+     * @param expiresAt   Timestamp after which the message expires
+     * @param id          The unique id of the message
+     * @param message     The message itself to store
+     * @param retriesLeft Explicitly set the retries for this message.
+     * @throws StoreItemExpiredException When the expiresAt is already expired.
+     */
+    public synchronized void put(
+            Instant expiresAt,
+            String id,
+            T message,
+            int retriesLeft
+    ) throws StoreItemExpiredException {
+        putInternal(new ExpiringRetryMessage<T>(this, expiresAt, id, message, retriesLeft));
+    }
+
+    /**
+     * Each call uses {@link ExpiringRetryMessage#getAndDecRetries()} for the message with this id.
      * When it reaches 0, the message is discarded from the {@link ExpiringRetryStore}.
      *
      * @param id Id of the message.
      * @return The message or null when message got discarded or no message with this id exists.
      */
     public synchronized T retryGet(String id) {
-        ExpiringMessage existingMessage = storeMap.get(id);
-        if (existingMessage == null)
+        ExpiringRetryMessage<T> existingRetryMessage = storeMap.get(id);
+        if (existingRetryMessage == null)
             return null;
 
-        if (existingMessage instanceof ExpiringRetryStore<?>.ExpiringRetryMessage) {
-            ExpiringRetryMessage existingRetryMessage = (ExpiringRetryMessage) existingMessage;
-
-            if (existingRetryMessage.retriesLeft <= 0) {
-                log.debug("Discard message {} because no retries left.", id);
-                remove(id);
-                return null;
-            }
-
-            existingRetryMessage.retriesLeft--;
+        if (existingRetryMessage.getAndDecRetries() <= 0) {
+            log.debug("Discard message {} because no retries left.", id);
+            remove(id);
+            return null;
         }
 
-        return get(id);
+        return existingRetryMessage.getMessage();
     }
 }
