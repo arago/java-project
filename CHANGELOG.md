@@ -1,3 +1,9 @@
+# v0.3.0
+
+`common`
+
+* Added optional exceptions to `GetByPath` and added tests. 
+
 # v0.2.1
 
 `collections`

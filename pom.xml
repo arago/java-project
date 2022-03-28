@@ -6,7 +6,7 @@
 
     <groupId>co.arago</groupId>
     <artifactId>java-project</artifactId>
-    <version>0.2.2</version>
+    <version>0.3.0</version>
     <packaging>pom</packaging>
 
     <organization>
@@ -56,7 +56,7 @@
         <plugin-source-version>3.2.0</plugin-source-version>
         <plugin-jar-version>3.2.0</plugin-jar-version>
         <plugin-resources-version>3.0.2</plugin-resources-version>
-        <plugin-javadoc-version>3.0.1</plugin-javadoc-version>
+        <plugin-javadoc-version>3.2.0</plugin-javadoc-version>
         <plugin-surefire-version>2.22.0</plugin-surefire-version>
         <plugin-gpg-version>3.0.1</plugin-gpg-version>
 
