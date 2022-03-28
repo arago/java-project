@@ -40,7 +40,6 @@ public class JsonSurferTool {
         return new JsonSurferTool(jsonTools);
     }
 
-
     public JsonSurfer getJsonSurfer() {
         return jsonSurfer;
     }

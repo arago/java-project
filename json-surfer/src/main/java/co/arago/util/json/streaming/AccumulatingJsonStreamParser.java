@@ -116,7 +116,7 @@ public class AccumulatingJsonStreamParser extends AbstractJsonStreamParser imple
      * Tell the parser that all data for it has ended.
      */
     @Override
-    public void close() throws Exception {
+    public void close() {
         parser.endOfInput();
         callback.dataFinished();
     }

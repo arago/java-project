@@ -69,7 +69,8 @@ public abstract class AbstractExpiringStore<T, M extends ExpiringMessage<T>> imp
      * @throws StoreItemExpiredException When the expiresAt is already expired.
      * @throws StoreItemExistsException  When the message already exists.
      */
-    public abstract void add(Instant expiresAt, String id, T message) throws StoreItemExpiredException, StoreItemExistsException;
+    public abstract void add(Instant expiresAt, String id, T message)
+            throws StoreItemExpiredException, StoreItemExistsException;
 
     /**
      * Put a message to the store, possibly overwriting existing messages.

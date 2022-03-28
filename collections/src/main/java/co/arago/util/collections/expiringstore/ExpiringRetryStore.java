@@ -19,7 +19,6 @@ public class ExpiringRetryStore<T> extends AbstractExpiringStore<T, ExpiringRetr
     static final int DEFAULT_RETRIES = 4;
     private final static Logger log = LoggerFactory.getLogger(ExpiringRetryStore.class);
 
-
     protected int retriesLeft;
 
     /**
@@ -64,9 +63,8 @@ public class ExpiringRetryStore<T> extends AbstractExpiringStore<T, ExpiringRetr
     public synchronized void add(
             Instant expiresAt,
             String id,
-            T message
-    ) throws StoreItemExpiredException, StoreItemExistsException {
-        addInternal(new ExpiringRetryMessage<T>(this, expiresAt, id, message, retriesLeft));
+            T message) throws StoreItemExpiredException, StoreItemExistsException {
+        addInternal(new ExpiringRetryMessage<>(this, expiresAt, id, message, retriesLeft));
     }
 
     /**
@@ -84,9 +82,8 @@ public class ExpiringRetryStore<T> extends AbstractExpiringStore<T, ExpiringRetr
             Instant expiresAt,
             String id,
             T message,
-            int retriesLeft
-    ) throws StoreItemExpiredException, StoreItemExistsException {
-        addInternal(new ExpiringRetryMessage<T>(this, expiresAt, id, message, retriesLeft));
+            int retriesLeft) throws StoreItemExpiredException, StoreItemExistsException {
+        addInternal(new ExpiringRetryMessage<>(this, expiresAt, id, message, retriesLeft));
     }
 
     /**
@@ -102,9 +99,8 @@ public class ExpiringRetryStore<T> extends AbstractExpiringStore<T, ExpiringRetr
     public synchronized void put(
             Instant expiresAt,
             String id,
-            T message
-    ) throws StoreItemExpiredException {
-        putInternal(new ExpiringRetryMessage<T>(this, expiresAt, id, message, retriesLeft));
+            T message) throws StoreItemExpiredException {
+        putInternal(new ExpiringRetryMessage<>(this, expiresAt, id, message, retriesLeft));
     }
 
     /**
@@ -122,9 +118,8 @@ public class ExpiringRetryStore<T> extends AbstractExpiringStore<T, ExpiringRetr
             Instant expiresAt,
             String id,
             T message,
-            int retriesLeft
-    ) throws StoreItemExpiredException {
-        putInternal(new ExpiringRetryMessage<T>(this, expiresAt, id, message, retriesLeft));
+            int retriesLeft) throws StoreItemExpiredException {
+        putInternal(new ExpiringRetryMessage<>(this, expiresAt, id, message, retriesLeft));
     }
 
     /**

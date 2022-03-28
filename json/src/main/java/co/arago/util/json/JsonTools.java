@@ -151,7 +151,6 @@ public class JsonTools {
         mapperBuilder.addModule(new JavaTimeModule());
         mapperBuilder.addModule(new Jdk8Module());
 
-
         if (builder.warnOnUnknownProperties) {
             mapperBuilder.addHandler(new DeserializationProblemHandler() {
                 @Override
@@ -160,16 +159,14 @@ public class JsonTools {
                         JsonParser p,
                         JsonDeserializer<?> deserializer,
                         Object beanOrClass,
-                        String propertyName
-                ) throws IOException {
+                        String propertyName) throws IOException {
                     if (log.isWarnEnabled()) {
                         String pointer = p.getParsingContext().getParent().pathAsPointer().toString();
                         log.warn(
                                 "Skipping deserialization of unknown property \"{}\" at {} for target class {}",
                                 propertyName,
                                 (pointer != null ? pointer : "/"),
-                                beanOrClass.getClass().getCanonicalName()
-                        );
+                                beanOrClass.getClass().getCanonicalName());
                     }
                     p.skipChildren();
                     return true;
@@ -242,8 +239,7 @@ public class JsonTools {
      * @return The created Object
      * @throws IOException If something else goes wrong
      */
-    public <T> T toObject(InputStream inputStream, Class<T> targetClass, Map<String, Object> injectMap) throws
-            IOException {
+    public <T> T toObject(InputStream inputStream, Class<T> targetClass, Map<String, Object> injectMap) throws IOException {
         return mapper.reader(new InjectableValues.Std(injectMap)).forType(targetClass).readValue(inputStream);
     }
 
@@ -324,8 +320,7 @@ public class JsonTools {
      * @return The created Object
      * @throws JsonProcessingException When the json is invalid
      */
-    public <T> T toObject(String json, Class<T> targetClass, Map<String, Object> injectMap) throws
-            JsonProcessingException {
+    public <T> T toObject(String json, Class<T> targetClass, Map<String, Object> injectMap) throws JsonProcessingException {
         return mapper.reader(new InjectableValues.Std(injectMap)).forType(targetClass).readValue(json);
     }
 
@@ -606,4 +601,3 @@ public class JsonTools {
     }
 
 }
-

@@ -66,15 +66,15 @@ public class GetByPath {
     /**
      * Use nameArray to fetch the next field in scannedData recursively.
      * <ul>
-     *     <li>When nameArray is empty we are finished and scannedData is returned as result.</li>
-     *     <li>Pop currentPath from nameArray</li>
-     *     <li>When scannedData is a Map, the currentPath is the key for the next part,</li>
-     *     <li>when scannedData is a Collection, the currentPath will be translated into an integer and
-     *     be used as index for the Collection, or when the key is ':last', the last entry of the array will be
-     *     returned,</li>
-     *     <li>otherwise when scannedData is not null, the next part will be searched by looking for a
-     *     field in the class of scannedData with the currentPath as name by using Reflections,</li>
-     *     <li>when scannedData is null, no match has been found and null is returned.</li>
+     * <li>When nameArray is empty we are finished and scannedData is returned as result.</li>
+     * <li>Pop currentPath from nameArray</li>
+     * <li>When scannedData is a Map, the currentPath is the key for the next part,</li>
+     * <li>when scannedData is a Collection, the currentPath will be translated into an integer and
+     * be used as index for the Collection, or when the key is ':last', the last entry of the array will be
+     * returned,</li>
+     * <li>otherwise when scannedData is not null, the next part will be searched by looking for a
+     * field in the class of scannedData with the currentPath as name by using Reflections,</li>
+     * <li>when scannedData is null, no match has been found and null is returned.</li>
      * </ul>
      *
      * @param nameArray   Array with keys/indices/fieldNames (depending on scannedData) for scannedData.
@@ -93,8 +93,8 @@ public class GetByPath {
             Object[] scannedArray = ((Collection<?>) scannedData).toArray();
 
             return getByNameArray(nameArray,
-                    StringUtils.equals(currentName, ":last") ? scannedArray[scannedArray.length - 1] : scannedArray[Integer.parseInt(currentName)]
-            );
+                    StringUtils.equals(currentName, ":last") ? scannedArray[scannedArray.length - 1]
+                            : scannedArray[Integer.parseInt(currentName)]);
         } else if (scannedData != null) {
             Field field = Reflections.findFieldByName(scannedData.getClass(), currentName);
             if (field == null)

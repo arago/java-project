@@ -18,7 +18,6 @@ public abstract class AbstractJsonParser {
 
         protected JsonSurferTool jsonSurferTool;
 
-
         /**
          * Set a specific JsonSurferTool.
          *

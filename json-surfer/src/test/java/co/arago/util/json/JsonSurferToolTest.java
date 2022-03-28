@@ -20,12 +20,10 @@ class JsonSurferToolTest {
             "Key1", "Value1",
             "Key2", 42,
             "Key3", List.of(1, 2, 3, 4),
-            "Key4", Map.of("Hello", "World")
-    );
-
+            "Key4", Map.of("Hello", "World"));
 
     @Test
-    void getByJsonPath() throws JsonProcessingException {
+    void getByJsonPath() {
         String result = GetByJsonPath.newWith("$.Key1").get(jsonData, String.class);
 
         log.info(result);

@@ -81,12 +81,13 @@ public class JsonPathParser extends AbstractJsonParser {
      * @param clazz     Type of the result values in the returned map.
      * @param <C>       Type of value
      * @return A map with Tuple [name, value] where value is one found by the matching key (json path) of
-     * {@link #jsonCuts}.
+     *         {@link #jsonCuts}.
      */
     protected <C> Map<String, C> getOneValues(Collector collector, Class<C> clazz) {
         Map<String, ValueBox<C>> valueBoxMap = new HashMap<>();
         for (Map.Entry<String, String> jsonCut : jsonCuts.entrySet()) {
-            valueBoxMap.put(jsonCut.getValue() != null ? jsonCut.getValue() : "data", collector.collectOne(jsonCut.getKey(), clazz));
+            valueBoxMap.put(jsonCut.getValue() != null ? jsonCut.getValue() : "data",
+                    collector.collectOne(jsonCut.getKey(), clazz));
         }
         collector.exec();
 
@@ -106,12 +107,13 @@ public class JsonPathParser extends AbstractJsonParser {
      * @param clazz     Type of the result values in the returned map.
      * @param <C>       Type of value
      * @return A map with Tuple [name, collection of values] where values are a collection of all found by the matching
-     * key (json path) of {@link #jsonCuts}.
+     *         key (json path) of {@link #jsonCuts}.
      */
     protected <C> Map<String, Collection<C>> getAllValues(Collector collector, Class<C> clazz) {
         Map<String, ValueBox<Collection<C>>> valueBoxMap = new HashMap<>();
         for (Map.Entry<String, String> jsonCut : jsonCuts.entrySet()) {
-            valueBoxMap.put(jsonCut.getValue() != null ? jsonCut.getValue() : "data", collector.collectAll(jsonCut.getKey(), clazz));
+            valueBoxMap.put(jsonCut.getValue() != null ? jsonCut.getValue() : "data",
+                    collector.collectAll(jsonCut.getKey(), clazz));
         }
         collector.exec();
 
@@ -146,8 +148,8 @@ public class JsonPathParser extends AbstractJsonParser {
      * Get one value from one path in {@link #jsonCuts} [jsonPath, name].
      *
      * @param jsonObject The object to parse.
-     * @param clazz Class of result values.
-     * @param <C> Type of result values.
+     * @param clazz      Class of result values.
+     * @param <C>        Type of result values.
      * @return The value found or null if nothing can be found.
      */
     public <C> C getOneFromOnePath(Object jsonObject, Class<C> clazz) {
@@ -169,8 +171,8 @@ public class JsonPathParser extends AbstractJsonParser {
      * Get one value from all paths in {@link #jsonCuts} [jsonPath, name].
      *
      * @param jsonObject The object to parse.
-     * @param clazz Class of result values.
-     * @param <C> Type of result values.
+     * @param clazz      Class of result values.
+     * @param <C>        Type of result values.
      * @return Map of [name, the value found].
      */
     public <C> Map<String, C> getOneFromAllPaths(Object jsonObject, Class<C> clazz) {
@@ -191,8 +193,8 @@ public class JsonPathParser extends AbstractJsonParser {
      * Get all matching values from one path in {@link #jsonCuts} [jsonPath, name].
      *
      * @param jsonObject The object to parse.
-     * @param clazz Class of result values.
-     * @param <C> Type of result values.
+     * @param clazz      Class of result values.
+     * @param <C>        Type of result values.
      * @return Collection of found values.
      */
     public <C> Collection<C> getAllFromOnePath(Object jsonObject, Class<C> clazz) {
@@ -214,8 +216,8 @@ public class JsonPathParser extends AbstractJsonParser {
      * Get all matching values from all paths in {@link #jsonCuts} [jsonPath, name].
      *
      * @param jsonObject The object to parse.
-     * @param clazz Class of result values.
-     * @param <C> Type of result values.
+     * @param clazz      Class of result values.
+     * @param <C>        Type of result values.
      * @return Map of [name, Collection of found values].
      */
     public <C> Map<String, Collection<C>> getAllFromAllPaths(Object jsonObject, Class<C> clazz) {

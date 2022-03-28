@@ -19,8 +19,7 @@ public class JsonSchemaTool {
         jsonSchemaGenerator = new JsonSchemaGenerator(
                 jsonTools.getMapper(),
                 false,
-                JsonSchemaConfig.vanillaJsonSchemaDraft4()
-        );
+                JsonSchemaConfig.vanillaJsonSchemaDraft4());
     }
 
     /**

@@ -14,15 +14,9 @@ public class EscapingStringFromTemplateBuilder extends AbstractStringFromTemplat
     protected static class EscapingStringLookup extends AbstractStringFromTemplateBuilder.EscapingStringLookup {
 
         static {
-            defaultMapping.put("JAVA", (map, key) ->
-                    StringEscapeUtils.escapeJava(getDefaultFromMap(map, key))
-            );
-            defaultMapping.put("JAVASCRIPT", (map, key) ->
-                    StringEscapeUtils.escapeEcmaScript(getDefaultFromMap(map, key))
-            );
-            defaultMapping.put("CSV", (map, key) ->
-                    StringEscapeUtils.escapeCsv(getDefaultFromMap(map, key))
-            );
+            defaultMapping.put("JAVA", (map, key) -> StringEscapeUtils.escapeJava(getDefaultFromMap(map, key)));
+            defaultMapping.put("JAVASCRIPT", (map, key) -> StringEscapeUtils.escapeEcmaScript(getDefaultFromMap(map, key)));
+            defaultMapping.put("CSV", (map, key) -> StringEscapeUtils.escapeCsv(getDefaultFromMap(map, key)));
         }
 
     }

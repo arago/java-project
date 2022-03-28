@@ -61,12 +61,12 @@ public abstract class AbstractJsonStreamParser extends AbstractJsonParser {
         @Override
         public void onValue(Object value, ParsingContext context) {
             try {
-                String field = (this.field == null ?
-                        (context.getCurrentFieldName() == null ? "data" : context.getCurrentFieldName()) :
-                        this.field);
-                Object parsedValue = (value instanceof JsonNode) ?
-                        jsonSurferTool.getJsonTools().transformObject(value, Object.class) :
-                        value;
+                String field = (this.field == null
+                        ? (context.getCurrentFieldName() == null ? "data" : context.getCurrentFieldName())
+                        : this.field);
+                Object parsedValue = (value instanceof JsonNode)
+                        ? jsonSurferTool.getJsonTools().transformObject(value, Object.class)
+                        : value;
 
                 callback.dataCallback(field, parsedValue);
             } catch (Exception x) {
@@ -74,7 +74,6 @@ public abstract class AbstractJsonStreamParser extends AbstractJsonParser {
             }
         }
     }
-
 
     /**
      * Protected constructor.
@@ -100,7 +99,8 @@ public abstract class AbstractJsonStreamParser extends AbstractJsonParser {
             try {
                 configBuilder.bind(jsonPathEntry.getKey(), new CallbackJsonPathListener(jsonPathEntry.getValue()));
             } catch (ParseCancellationException e) {
-                throw new IllegalArgumentException("Invalid jsonPath '" + jsonPathEntry.getKey() + "' in definition of 'jsonCuts'.", e);
+                throw new IllegalArgumentException(
+                        "Invalid jsonPath '" + jsonPathEntry.getKey() + "' in definition of 'jsonCuts'.", e);
             }
         }
 

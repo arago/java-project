@@ -47,9 +47,8 @@ public class ExpiringStore<T> extends AbstractExpiringStore<T, ExpiringMessage<T
     public synchronized void add(
             Instant expiresAt,
             String id,
-            T message
-    ) throws StoreItemExpiredException, StoreItemExistsException {
-        addInternal(new ExpiringMessage<T>(this, expiresAt, id, message));
+            T message) throws StoreItemExpiredException, StoreItemExistsException {
+        addInternal(new ExpiringMessage<>(this, expiresAt, id, message));
     }
 
     /**
@@ -63,9 +62,8 @@ public class ExpiringStore<T> extends AbstractExpiringStore<T, ExpiringMessage<T
     public synchronized void put(
             Instant expiresAt,
             String id,
-            T message
-    ) throws StoreItemExpiredException {
-        putInternal(new ExpiringMessage<T>(this, expiresAt, id, message));
+            T message) throws StoreItemExpiredException {
+        putInternal(new ExpiringMessage<>(this, expiresAt, id, message));
     }
 
 }

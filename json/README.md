@@ -1,9 +1,9 @@
 # Json
 
-This library provides the `JsonTools` and the `JsonUtils`. These classes make handling of JSON within your project
-fast and easy.
+This library provides the `JsonTools` and the `JsonUtils`. These classes make handling of JSON within your project fast
+and easy.
 
-Wrapper around the Jackson Mapper: `co.arago.util.json.JsonTools` 
+Wrapper around the Jackson Mapper: `co.arago.util.json.JsonTools`
 
 Common static instances of JsonTools: `co.arago.util.json.JsonUtils`
 

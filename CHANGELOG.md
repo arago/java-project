@@ -1,9 +1,11 @@
 # v0.2.1
 
 `collections`
+
 * Refactoring of ExpiringStore
 
 `json`
+
 * Faster cloning in JsonTools
 * Add clone with TypeReference
 * Rename ambiguous calls

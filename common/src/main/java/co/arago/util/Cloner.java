@@ -24,12 +24,12 @@ public class Cloner {
             throw new IOException("Cannot clone non serializable value");
 
         try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
-             ObjectOutputStream oos = new ObjectOutputStream(baos)) {
+                ObjectOutputStream oos = new ObjectOutputStream(baos)) {
             oos.writeObject(source);
             oos.flush();
 
             try (ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
-                 ObjectInputStream ois = new ObjectInputStream(bais)) {
+                    ObjectInputStream ois = new ObjectInputStream(bais)) {
                 return clazz.cast(ois.readObject());
             }
         }
