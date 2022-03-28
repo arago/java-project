@@ -7,7 +7,7 @@
     <parent>
         <artifactId>java-project</artifactId>
         <groupId>co.arago</groupId>
-        <version>0.2.1</version>
+        <version>0.2.2</version>
     </parent>
 
     <groupId>co.arago.util</groupId>
@@ -18,7 +18,8 @@
     </description>
 
     <properties>
-        <jackson-version>2.12.5</jackson-version>
+        <jackson-version>2.13.2</jackson-version>
+        <jackson-core-version>2.13.2.1</jackson-core-version>
     </properties>
 
     <dependencies>
@@ -35,7 +36,7 @@
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
-            <version>${jackson-version}</version>
+            <version>${jackson-core-version}</version>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.datatype</groupId>

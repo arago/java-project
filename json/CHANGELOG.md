@@ -1,3 +1,7 @@
+# v0.2.2
+
+* Library updates
+
 # v0.2.1
 
 * Faster cloning in JsonTools
