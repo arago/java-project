@@ -21,22 +21,44 @@ public class GetByPath {
     protected final String path;
     protected final List<String> splitPath;
     protected final boolean throwExceptions;
+    protected final boolean forceAccess;
+    protected final boolean logErrors;
+
+    public static final class Flags {
+        private boolean throwExceptions = false;
+        private boolean forceAccess = false;
+        private boolean logErrors = false;
+
+        public Flags setThrowExceptions(boolean throwExceptions) {
+            this.throwExceptions = throwExceptions;
+            return this;
+        }
+
+        public Flags setForceAccess(boolean forceAccess) {
+            this.forceAccess = forceAccess;
+            return this;
+        }
+
+        public Flags setLogErrors(boolean logErrors) {
+            this.logErrors = logErrors;
+            return this;
+        }
+    }
 
     /**
      * Protected constructor.
      * <p>
-     * Use {@link #newWith(String)} or {@link #newWith(String, EscapingStringTokenizer, boolean)}.
+     * Use {@link #newWith(String)} or {@link #newWith(String, EscapingStringTokenizer)}.
      *
      * @param path            The path to use. Example "/data/field".
      * @param stringTokenizer The Tokenizer to use. Arbitrary escape and delimiters can be set via this.
-     * @param throwExceptions Whether to throw exceptions when paths do not match the scanned object.
+     * @param flags           Configuration flags.
      */
-    protected GetByPath(
-            String path,
-            EscapingStringTokenizer stringTokenizer,
-            boolean throwExceptions) {
+    protected GetByPath(String path, EscapingStringTokenizer stringTokenizer, Flags flags) {
         this.path = path;
-        this.throwExceptions = throwExceptions;
+        this.throwExceptions = flags.throwExceptions;
+        this.forceAccess = flags.forceAccess;
+        this.logErrors = flags.logErrors;
 
         if (path != null && path.charAt(0) == stringTokenizer.delimiter) {
             splitPath = stringTokenizer.build(path);
@@ -50,14 +72,47 @@ public class GetByPath {
      *
      * @param path            The path to use. Example "/data/field".
      * @param stringTokenizer The Tokenizer to use. Arbitrary escape and delimiters can be set via this.
-     * @param throwExceptions Whether to throw exceptions when paths do not match the scanned object.
+     * @param flags           Configuration flags.
      * @return New instance of {@link GetByPath}
      */
     public static GetByPath newWith(
             String path,
             EscapingStringTokenizer stringTokenizer,
-            boolean throwExceptions) {
-        return new GetByPath(path, stringTokenizer, throwExceptions);
+            Flags flags) {
+        return new GetByPath(path, stringTokenizer, flags);
+    }
+
+    /**
+     * Static constructor
+     *
+     * @param path            The path to use. Example "/data/field".
+     * @param stringTokenizer The Tokenizer to use. Arbitrary escape and delimiters can be set via this.
+     * @return New instance of {@link GetByPath}
+     */
+    public static GetByPath newWith(
+            String path,
+            EscapingStringTokenizer stringTokenizer) {
+        return newWith(
+                path,
+                stringTokenizer,
+                new Flags());
+    }
+
+    /**
+     * Static constructor. Uses default tokenizer with delimiter '/' and escape char '\'.
+     *
+     * @param path  The path to use. Example "/data/field".
+     * @param flags Configuration flags.
+     * @return New instance of {@link GetByPath}
+     */
+    public static GetByPath newWith(String path, Flags flags) {
+        return newWith(
+                path,
+                EscapingStringTokenizer.newInstance()
+                        .setIncludeEmpty(false)
+                        .setDelimiter('/')
+                        .setEscape('\\'),
+                flags);
     }
 
     /**
@@ -66,28 +121,10 @@ public class GetByPath {
      * @param path The path to use. Example "/data/field".
      * @return New instance of {@link GetByPath}
      */
-    public static GetByPath newWithExceptions(
-            String path) {
-        return newWith(path, EscapingStringTokenizer.newInstance()
-                .setIncludeEmpty(false)
-                .setDelimiter('/')
-                .setEscape('\\'),
-                true);
-    }
-
-    /**
-     * Static constructor. Uses default tokenizer with delimiter '/' and escape char '\' and
-     * {@link #throwExceptions} = false.
-     *
-     * @param path The path to use. Example "/data/field".
-     * @return New instance of {@link GetByPath}
-     */
     public static GetByPath newWith(String path) {
-        return newWith(path, EscapingStringTokenizer.newInstance()
-                .setIncludeEmpty(false)
-                .setDelimiter('/')
-                .setEscape('\\'),
-                false);
+        return newWith(
+                path,
+                new Flags());
     }
 
     /**
@@ -117,6 +154,7 @@ public class GetByPath {
 
         String currentName = nameArray.remove(0);
 
+        String errorMessage = null;
         if (scannedData instanceof Map) {
             Map<?, ?> scannedMap = ((Map<?, ?>) scannedData);
             Object value = scannedMap.get(currentName);
@@ -124,7 +162,6 @@ public class GetByPath {
                 return getByNameArray(nameArray, value);
             }
         } else if (scannedData instanceof Collection) {
-            Collection<?> scannedCollection = ((Collection<?>) scannedData);
             Object[] scannedArray = ((Collection<?>) scannedData).toArray();
 
             if (scannedArray.length > 0) {
@@ -133,29 +170,47 @@ public class GetByPath {
                 } else {
                     int pos = Integer.parseInt(currentName);
                     if (pos > 0 && pos < scannedArray.length) {
-                        return getByNameArray(nameArray, pos);
+                        return getByNameArray(nameArray, scannedArray[pos]);
+                    } else {
+                        errorMessage = String.format("Index '%s' of path '%s' is out of bounds for '%s' of length %d.",
+                                currentName,
+                                path, scannedData.getClass().getName(), scannedArray.length);
                     }
                 }
+            } else {
+                errorMessage = String.format("Cannot access '%s' of path '%s' for '%s' because it is empty.", currentName,
+                        path, scannedData.getClass().getName());
             }
-        } else if (scannedData != null) {
+        } else if (!(scannedData instanceof String) &&
+                !(scannedData instanceof Number) &&
+                !(scannedData instanceof Boolean)) {
             Field field = Reflections.findFieldByName(scannedData.getClass(), currentName);
             if (field != null) {
                 try {
-//                    field.setAccessible(true);
+                    if (forceAccess)
+                        field.setAccessible(true);
                     return getByNameArray(nameArray, field.get(scannedData));
                 } catch (IllegalAccessError | IllegalAccessException e) {
-                    log.error("Field '{}' of '{}' is not accessible. {}", currentName, scannedData.getClass().getName(),
-                            e.getMessage());
+                    errorMessage = String.format("Field '%s' of '%s' is not accessible. %s", currentName,
+                            scannedData.getClass().getName(), e.getMessage());
                 }
             }
+        } else {
+            errorMessage = String.format("Cannot access '%s' of path '%s': Path too deep, no more data to scan.",
+                    currentName, path);
         }
 
-        if (this.throwExceptions) {
-            throw new IllegalArgumentException(
-                    String.format("Cannot find '%s' of '%s' in '%s'.",
-                            currentName,
-                            path,
-                            scannedData != null ? scannedData.getClass().getName() : "null"));
+        if (throwExceptions) {
+            if (StringUtils.isBlank(errorMessage))
+                errorMessage = String.format("Cannot find '%s' of path '%s' in '%s'.",
+                        currentName,
+                        path,
+                        scannedData.getClass().getName());
+            if (logErrors)
+                log.error(errorMessage);
+            throw new IllegalArgumentException(errorMessage);
+        } else if (StringUtils.isNotBlank(errorMessage) && logErrors) {
+            log.warn("Returning null because of: " + errorMessage);
         }
 
         return null;
@@ -168,7 +223,7 @@ public class GetByPath {
      * i.e '\\/' for a literal '/' as part of a name inside the path.
      * <p>
      * Delimiter and escape characters can be changed by supplying your own {@link EscapingStringTokenizer} in the
-     * Constructor {@link GetByPath#GetByPath(String, EscapingStringTokenizer, boolean)} of this class.
+     * Constructor {@link GetByPath#GetByPath(String, EscapingStringTokenizer, Flags)} of this class.
      *
      * @param data The data that is searched with the {@link #path}.
      * @return The value pointed at by path or null when nothing can be found.
@@ -179,13 +234,6 @@ public class GetByPath {
         if (StringUtils.equals(path, "/"))
             return data;
 
-        try {
-            return getByNameArray(splitPath, data);
-        } catch (Exception e) {
-            if (this.throwExceptions)
-                throw e;
-            log.error("Error while applying path '{}' to '{}': {}", path, data.getClass().getName(), e);
-            return null;
-        }
+        return getByNameArray(splitPath, data);
     }
 }

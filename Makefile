@@ -1,4 +1,5 @@
 PACKAGE_VERSION := $(shell cat ./VERSION)
+MVN_OPTIONS ?= -T 1C
 
 compile: set_version
 	mvn $(MVN_OPTIONS) compile
