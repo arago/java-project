@@ -7,7 +7,7 @@
     <parent>
         <groupId>co.arago</groupId>
         <artifactId>java-project</artifactId>
-        <version>0.3.0</version>
+        <version>0.3.1</version>
     </parent>
 
     <groupId>co.arago.util</groupId>
@@ -22,7 +22,7 @@
         <dependency>
             <groupId>co.arago.util</groupId>
             <artifactId>json</artifactId>
-            <version>0.3.0</version>
+            <version>0.3.1</version>
         </dependency>
         <dependency>
             <groupId>com.github.jsurfer</groupId>

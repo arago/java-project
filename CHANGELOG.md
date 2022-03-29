@@ -1,3 +1,11 @@
+# v0.3.1
+
+* Added multithreaded option for mvn execution in `Makefile`.
+
+`common`
+
+* Improved tests for `GetByPath` and added flags for logging, exceptions and forced access for fields.
+
 # v0.3.0
 
 `common`

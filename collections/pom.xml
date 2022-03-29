@@ -7,7 +7,7 @@
     <parent>
         <artifactId>java-project</artifactId>
         <groupId>co.arago</groupId>
-        <version>0.3.0</version>
+        <version>0.3.1</version>
     </parent>
 
     <groupId>co.arago.util</groupId>
