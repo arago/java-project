@@ -1,3 +1,12 @@
+# v0.4.0
+
+JsonTools:
+* Add control over `JsonParser.Feature#AUTO_CLOSE_SOURCE` to `JsonTools`.
+* Added `JsonTools#toObjectEx` with correct class casting.
+
+Common:
+* Renamed `RequiredFieldChecks` To `ValueChecks`.
+
 # v0.3.1
 
 * Added multithreaded option for mvn execution in `Makefile`.
