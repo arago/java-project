@@ -6,7 +6,12 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.json.JsonReadFeature;
 import com.fasterxml.jackson.core.json.JsonWriteFeature;
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.*;
+import com.fasterxml.jackson.databind.DeserializationContext;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.InjectableValues;
+import com.fasterxml.jackson.databind.JsonDeserializer;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.deser.DeserializationProblemHandler;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
@@ -33,6 +38,7 @@ public class JsonTools {
         protected boolean lenientParsing = false;
         protected boolean escapeNonAscii = false;
         protected boolean warnOnUnknownProperties = false;
+        protected boolean autoCloseSource = false;
 
         /**
          * Does not serialize values that are set to 'null' in a json-object to the output. Default is false.
@@ -100,6 +106,17 @@ public class JsonTools {
             return self();
         }
 
+        /**
+         * Sets the {@link JsonParser.Feature#AUTO_CLOSE_SOURCE}.
+         *
+         * @param autoCloseSource Enable or disable the feature.
+         * @return {@link #self()}
+         */
+        public T setAutoCloseSource(boolean autoCloseSource) {
+            this.autoCloseSource = autoCloseSource;
+            return self();
+        }
+
         protected abstract T self();
 
         public abstract JsonTools build();
@@ -134,6 +151,7 @@ public class JsonTools {
         mapperBuilder.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, builder.failOnUnknownProperties);
         mapperBuilder.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, builder.failOnEmptyBeans);
         mapperBuilder.configure(JsonWriteFeature.ESCAPE_NON_ASCII, builder.escapeNonAscii);
+        mapperBuilder.configure(JsonParser.Feature.AUTO_CLOSE_SOURCE, builder.autoCloseSource);
 
         if (builder.skipNullMapValues)
             mapperBuilder.serializationInclusion(JsonInclude.Include.NON_NULL);
@@ -159,7 +177,8 @@ public class JsonTools {
                         JsonParser p,
                         JsonDeserializer<?> deserializer,
                         Object beanOrClass,
-                        String propertyName) throws IOException {
+                        String propertyName
+                ) throws IOException {
                     if (log.isWarnEnabled()) {
                         String pointer = p.getParsingContext().getParent().pathAsPointer().toString();
                         log.warn(
@@ -209,8 +228,8 @@ public class JsonTools {
     /**
      * Parse stream into JsonNode tree
      *
-     * @param stream A stream to read from
-     * @return The JsonNode containing the data
+     * @param stream A stream to read from. JsonParser.Feature AUTO_CLOSE_SOURCE is enabled by default.
+     * @return The JsonNode containing the data.
      * @throws IOException On IO error
      */
     public JsonNode readTree(InputStream stream) throws IOException {
@@ -232,7 +251,7 @@ public class JsonTools {
      * Transforms a JSON structure read from an inputStream into an Object using injectMap
      * as additional parameters.
      *
-     * @param inputStream Input stream with data
+     * @param inputStream Input stream with data. JsonParser.Feature AUTO_CLOSE_SOURCE is enabled by default.
      * @param targetClass The target type of object to create
      * @param injectMap   Map with additional inject values
      * @param <T>         Type of the object
@@ -246,7 +265,7 @@ public class JsonTools {
     /**
      * Transforms a JSON structure read from an inputStream into an Object.
      *
-     * @param inputStream Input stream with data
+     * @param inputStream Input stream with data. JsonParser.Feature AUTO_CLOSE_SOURCE is enabled by default.
      * @param targetClass The target type of object to create
      * @param <T>         Type of the object
      * @return The created Object
@@ -380,7 +399,7 @@ public class JsonTools {
      * Transforms a JSON structure given as Object into an Object cast by
      * TypeReference.
      *
-     * @param inputStream   Input stream with data
+     * @param inputStream   Input stream with data. JsonParser.Feature AUTO_CLOSE_SOURCE is enabled by default.
      * @param typeReference The target type of object to create
      * @param <T>           Type of the object
      * @return The created Object
@@ -441,7 +460,7 @@ public class JsonTools {
     /**
      * Read an InputStream with json data and return a prettified string.
      *
-     * @param stream The stream with json data
+     * @param stream The stream with json data. JsonParser.Feature AUTO_CLOSE_SOURCE is enabled by default.
      * @return The prettified json string
      * @throws IOException If the inputStream contains no valid JSON.
      */
@@ -507,6 +526,25 @@ public class JsonTools {
     }
 
     /**
+     * This function tries to transform either a String or any Object into another object via Jackson.
+     *
+     * @param json  The json data. String or any Object. String uses {@link JsonTools#toObject(String, String)},
+     *              everything else uses {@link JsonTools#transformObject(Object, String)}. If the string is blank, null is returned.
+     * @param clazz Class type of the desired result. The default is {@link Map}.
+     * @return The generated object or null if no object can be created (String is blank for instance).
+     * @throws JsonProcessingException On processing error
+     */
+    public <T> T toObjectEx(Object json, Class<T> clazz) throws JsonProcessingException {
+        if (json instanceof String) {
+            String str = (String) json;
+            return str.isBlank() ? null : toObject(str, clazz);
+        } else {
+            return transformObject(json, clazz);
+        }
+
+    }
+
+    /**
      * This function tries to transform either a String or any Object into a map via Jackson.
      *
      * @param json The json data. String or any Object. String uses {@link JsonTools#toObject(String, String)},
@@ -514,13 +552,8 @@ public class JsonTools {
      * @return The generated map or null if no map can be created (String is blank for instance).
      * @throws IOException When the json is invalid
      */
-    public Object toObjectEx(Object json) throws IOException {
-        try {
-            return toObjectEx(json, "java.util.Map");
-        } catch (ClassNotFoundException e) {
-            // will not happen
-            return null;
-        }
+    public Map<?, ?> toObjectEx(Object json) throws IOException {
+        return toObjectEx(json, Map.class);
     }
 
     /**
@@ -548,7 +581,7 @@ public class JsonTools {
     /**
      * Create a POJO structure from an InputStream containing JSON
      *
-     * @param inputStream InputStream with JSON data
+     * @param inputStream InputStream with JSON data. JsonParser.Feature AUTO_CLOSE_SOURCE is enabled by default.
      * @return The POJO Object
      * @throws IOException On errors with JSON conversion
      */
