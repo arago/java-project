@@ -28,6 +28,11 @@
             <artifactId>mbknor-jackson-jsonschema_2.13</artifactId>
             <version>1.0.39</version>
         </dependency>
+        <dependency>
+            <groupId>org.jetbrains.kotlin</groupId>
+            <artifactId>kotlin-scripting-compiler-embeddable</artifactId>
+            <version>1.4.21</version>
+        </dependency>
     </dependencies>
 
 
