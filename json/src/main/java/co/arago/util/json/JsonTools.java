@@ -177,8 +177,7 @@ public class JsonTools {
                         JsonParser p,
                         JsonDeserializer<?> deserializer,
                         Object beanOrClass,
-                        String propertyName
-                ) throws IOException {
+                        String propertyName) throws IOException {
                     if (log.isWarnEnabled()) {
                         String pointer = p.getParsingContext().getParent().pathAsPointer().toString();
                         log.warn(
