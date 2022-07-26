@@ -1,3 +1,13 @@
+# v0.4.2
+
+New tag because of versioning problems.
+
+# v0.4.1
+
+JsonSchema: 
+
+* Updated dependency because of CVE-2020-29582
+
 # v0.4.0
 
 JsonTools:
